@@ -1,0 +1,5 @@
+# ~/.ddns/config
+[opendns]
+account = your_account
+password = your_password
+hostname = all.dnsomatic.com
