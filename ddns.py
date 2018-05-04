@@ -4,6 +4,13 @@ from configparser import ConfigParser
 from pathlib import Path
 from time import time
 
+__author__ = 'Antonio Dias'
+__email__ = 'accdias@gmail.com'
+__copyright__ = 'Copyright 2018, Antonio Dias'
+__license__ = 'GPL'
+__version__ = '0.1'
+__status__ = 'Development'
+
 ddns_config_file = Path('~/.ddns/config')
 ddns_cache_file = Path('/var/tmp/ddns.cache')
 
@@ -53,3 +60,5 @@ if (cached_ip != ddns_update_payload['myip']) or (time() - last_update > timeout
             print(r.text)
 else:
     print('Address hasn\'t changed: {0}'.format(cached_ip))
+
+# vim:ts=4:sts=4:sw=4:et
