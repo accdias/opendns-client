@@ -18,7 +18,7 @@ ddns_cache_file = Path('/var/tmp/ddns.cache')
 config = ConfigParser(allow_no_value=True)
 config.read(ddns_config_file.expanduser())
 
-# Default timeout is 7 days
+# Default timeout is 7 days in seconds
 timeout = 60 * 60 * 24 * 7
 
 # OpenDNS (DNSoMatic) update URL
