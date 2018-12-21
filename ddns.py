@@ -14,12 +14,17 @@ __status__ = 'Development'
 ddns_config_file = Path('~/.ddns/config')
 ddns_cache_file = Path('/var/tmp/ddns.cache')
 
+ddns_user_agent = f'CloudPro - Python DDNS Client - {__version__}'
+
 # Load the main configuration file
 config = ConfigParser(allow_no_value=True)
 config.read(ddns_config_file.expanduser())
 
 # Default timeout is 7 days in seconds
 timeout = 60 * 60 * 24 * 7
+
+# DuckDNS update URL
+duckdns_update_url = 'https://www.duckdns.org/update?domains={YOURVALUE}&token={YOURVALUE}[&ip={YOURVALUE}][&ipv6={YOURVALUE}][&verbose=true][&clear=true]'
 
 # OpenDNS (DNSoMatic) update URL
 ddns_update_url = 'https://updates.dnsomatic.com/nic/update'
@@ -31,7 +36,8 @@ ddns_update_payload = {
     'myip': '',
     'wildcard': 'NOCHG',
     'mx': 'NOCHG',
-    'backmx': 'NOCHG'
+    'backmx': 'NOCHG',
+    'user-agent': ddns_user_agent
 }
 
 # public_ipv4_json_url = 'http://v4.ifconfig.co/json'
@@ -52,13 +58,13 @@ else:
 
 if (cached_ip != ddns_update_payload['myip']) or (time() - last_update > timeout):
     with ddns_cache_file.open('w') as f:
-        f.write('{0}:{1}'.format(time(), ddns_update_payload['myip']))
+        f.write(f'{time()}:{ddns_update_payload["myip"]}')
     with http_get(ddns_update_url, data=ddns_update_payload, auth=ddns_update_auth) as r:
         if r.ok:
-            print('Address updated: {0}'.format(ddns_update_payload['myip']))
+            print(f'Address updated: {ddns_update_payload["myip"]}')
         else:
             print(r.text)
 else:
-    print('Address hasn\'t changed: {0}'.format(cached_ip))
+    print(f'Address hasn\'t changed: {cached_ip}')
 
 # vim:ts=4:sts=4:sw=4:et
