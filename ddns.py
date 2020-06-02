@@ -11,14 +11,14 @@ __license__ = 'GPL'
 __version__ = '0.1'
 __status__ = 'Development'
 
-ddns_config_file = Path('~/.ddns/config')
+ddns_config_file = Path('~/.ddns/config').expanduser()
 ddns_cache_file = Path('/var/tmp/ddns.cache')
 
 ddns_user_agent = f'CloudPro - Python DDNS Client - {__version__}'
 
 # Load the main configuration file
 config = ConfigParser(allow_no_value=True)
-config.read(ddns_config_file.expanduser())
+config.read(ddns_config_file)
 
 # Default timeout is 7 days in seconds
 timeout = 60 * 60 * 24 * 7
@@ -47,7 +47,10 @@ ddns_update_payload = {
 public_ipv4_url = 'http://myip.dnsomatic.com'
 
 with http_get(public_ipv4_url) as r:
-    ddns_update_payload['myip'] = r.text.strip() if r.ok else '0.0.0.0'
+    ddns_update_payload['myip'] = r.text.strip() if r.ok else None
+    if not ddns_update_payload['myip']:
+        print('Could not determine public IP address')
+        exit(1)
 
 if ddns_cache_file.exists():
     with ddns_cache_file.open() as f:
