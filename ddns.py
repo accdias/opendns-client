@@ -44,12 +44,13 @@ ddns_update_payload = {
 # public_ipv6_json_url = 'http://v6.ifconfig.co/json'
 # public_ipv4_url = 'http://v4.ifconfig.co/ip'
 # public_ipv6_url = 'http://v6.ifconfig.co/ip'
+# public_ipv4_url = 'https://ipinfo.io/ip'
 public_ipv4_url = 'http://myip.dnsomatic.com'
 
 with http_get(public_ipv4_url) as r:
     ddns_update_payload['myip'] = r.text.strip() if r.ok else None
     if not ddns_update_payload['myip']:
-        print('Could not determine public IP address')
+        print(f'Could not determine public IP address: {r.status} {r.reason}')
         exit(1)
 
 if ddns_cache_file.exists():
